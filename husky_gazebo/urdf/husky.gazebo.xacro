@@ -28,6 +28,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:arg name="front_laser" default="true" />
   <xacro:arg name="imu_enabled" default="true" />
   <xacro:arg name="gps_enabled" default="true" />
+  <xacro:arg name="robot_name" default="" />
 
   <xacro:include filename="$(find husky_description)/urdf/husky.urdf.xacro" />  
   <xacro:include filename="$(find husky_gazebo)/urdf/sick_lms100.urdf.xacro" />
@@ -39,7 +40,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     <!-- Gazebo plugin for ROS Control -->
     <gazebo>
       <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-        <robotNamespace>/</robotNamespace>
+        <!--robotNamespace>/${robot_name}</robotNamespace-->
+        <robotNamespace>/robot1</robotNamespace>
       </plugin>
     </gazebo>
 
