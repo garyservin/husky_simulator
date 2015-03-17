@@ -28,7 +28,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:arg name="front_laser" default="true" />
   <xacro:arg name="imu_enabled" default="true" />
   <xacro:arg name="gps_enabled" default="true" />
-  <xacro:arg name="robot_name" default="" />
+  <xacro:arg name="robot_namespace" default="/" />
 
   <xacro:include filename="$(find husky_description)/urdf/husky.urdf.xacro" />  
   <xacro:include filename="$(find husky_gazebo)/urdf/sick_lms100.urdf.xacro" />
@@ -40,8 +40,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     <!-- Gazebo plugin for ROS Control -->
     <gazebo>
       <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-        <!--robotNamespace>/${robot_name}</robotNamespace-->
-        <robotNamespace>/robot1</robotNamespace>
+        <robotNamespace>$(arg robot_namespace)</robotNamespace>
+        <!-- robotNamespace>/</robotNamespace -->
       </plugin>
     </gazebo>
 
@@ -76,7 +76,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     <xacro:if value="$(arg imu_enabled)">
       <gazebo>
         <plugin name="imu_controller" filename="libhector_gazebo_ros_imu.so">
-          <robotNamespace>/</robotNamespace>
+          <robotNamespace>$(arg robot_namespace)</robotNamespace>
           <updateRate>50.0</updateRate> 
           <bodyName>base_link</bodyName>
           <topicName>imu/data</topicName>
@@ -94,7 +94,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
       <gazebo>
         <plugin name="gps_controller" filename="libhector_gazebo_ros_gps.so">
           <updateRate>40</updateRate>
-          <robotNamespace>/</robotNamespace>
+          <robotNamespace>$(arg robot_namespace)</robotNamespace>
           <bodyName>base_link</bodyName>
           <frameId>base_link</frameId>
           <topicName>navsat/fix</topicName>
