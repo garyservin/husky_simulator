@@ -40,7 +40,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- BEGIN ROBOT 1-->
   <group ns="robot1">
     <param name="tf_prefix" value="robot1_tf" />
-    <include file="$(find husky_control)/launch/control.launch"/>
+    <include file="$(find husky_control)/launch/control.launch">
+      <arg name="robot_name" value="robot1" />
+      <arg name="tf_prefix" value="robot1_tf" />
+    </include>
     <include file="$(find husky_gazebo)/launch/description_gazebo.launch">
       <arg name="gps_enabled" value="true"/>
       <arg name="imu_enabled" value="true"/>
@@ -54,7 +57,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- BEGIN ROBOT 2-->
   <group ns="robot2">
     <param name="tf_prefix" value="robot2_tf" />
-    <include file="$(find husky_control)/launch/control.launch"/>
+    <include file="$(find husky_control)/launch/control.launch">
+      <arg name="robot_name" value="robot2" />
+      <arg name="tf_prefix" value="robot2_tf" />
+    </include>
     <include file="$(find husky_gazebo)/launch/description_gazebo.launch">
       <arg name="gps_enabled" value="true"/>
       <arg name="imu_enabled" value="true"/>
