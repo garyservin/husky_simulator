@@ -38,28 +38,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     <arg name="debug" value="false"/>
   </include>
 
-  <!-- BEGIN ROBOT 1-->
-  <group ns="robot1">
-    <param name="tf_prefix" value="robot1_tf" />
-    <include file="$(find husky_gazebo)/launch/description_gazebo.launch">
-      <arg name="gps_enabled" value="true"/>
-      <arg name="imu_enabled" value="true"/>
-      <arg name="front_laser" value="true"/>
-      <arg name="init_pose" value="-x 1 -y 1 -z 0" />
-      <arg name="robot_name"  value="robot1" />
-    </include>
-  </group>
-
-  <!-- BEGIN ROBOT 2-->
-  <!--group ns="robot2">
-    <param name="tf_prefix" value="robot2_tf" />
-    <include file="$(find husky_gazebo)/launch/description_gazebo.launch">
-      <arg name="gps_enabled" value="true"/>
-      <arg name="imu_enabled" value="true"/>
-      <arg name="front_laser" value="true"/>
-      <arg name="init_pose" value="-x -1 -y 1 -z 0" />
-      <arg name="robot_name"  value="Robot2" />
-    </include>
-  </group-->
+  <include file="$(find husky_gazebo)/launch/description_gazebo.launch">
+    <arg name="gps_enabled" value="true"/>
+    <arg name="imu_enabled" value="true"/>
+    <arg name="front_laser" value="true"/>
+  </include>
 
 </launch>
