@@ -42,7 +42,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   </node>
 
   <!-- Topic import/export configuration -->
-  <!-- node pkg="topic_tools" type="relay" args="/husky_velocity_controller/cmd_vel /$(arg master_name)/husky_velocity_controller/cmd_vel" name="$(arg master_name)_export_cmd_vel"></node -->
+  <node pkg="topic_tools" type="relay" args="/husky_velocity_controller/cmd_vel /$(arg master_name)/husky_velocity_controller/cmd_vel" name="$(arg master_name)_export_cmd_vel"></node>
 
   <!-- Service import/export configuration -->
   <node pkg="service_tools" type="relay.py" args="/$(arg master_name)/controller_manager/load_controller /controller_manager/load_controller controller_manager_msgs LoadController" name="$(arg master_name)_import_gazebo_load_controller"></node>
