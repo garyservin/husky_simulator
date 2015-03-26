@@ -38,27 +38,27 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   </include>
 
   <!-- ROBOT 1 model and configuration files -->
-  <group ns="robot1">
+  <group ns="public/robot1">
     <rosparam command="load" file="$(find husky_control)/config/control.yaml" />
     <include file="$(find husky_gazebo)/launch/description_gazebo.launch">
       <arg name="gps_enabled" value="true"/>
       <arg name="imu_enabled" value="true"/>
       <arg name="front_laser" value="true"/>
       <arg name="init_pose" value="-x 1 -y 1 -z 0" />
-      <arg name="robot_name"  value="robot1" />
+      <arg name="robot_name"  value="public/robot1" />
       <arg name="model"  value="robot1" />
     </include>
   </group>
 
   <!-- ROBOT 2 model and configuration files -->
-  <group ns="robot2">
+  <group ns="public/robot2">
     <rosparam command="load" file="$(find husky_control)/config/control.yaml" />
     <include file="$(find husky_gazebo)/launch/description_gazebo.launch">
       <arg name="gps_enabled" value="true"/>
       <arg name="imu_enabled" value="true"/>
       <arg name="front_laser" value="true"/>
       <arg name="init_pose" value="-x 3 -y 5 -z 0" />
-      <arg name="robot_name"  value="robot2" />
+      <arg name="robot_name"  value="public/robot2" />
       <arg name="model"  value="robot2" />
     </include>
   </group>
