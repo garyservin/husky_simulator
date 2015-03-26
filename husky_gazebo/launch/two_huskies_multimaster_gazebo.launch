@@ -52,9 +52,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     </include>
   </group>
 
-  <!-- BEGIN ROBOT 2 simulated basics 
-  <group ns="public/robot2">
+  <!-- BEGIN ROBOT 2 simulated basics -->
+  <group ns="robot2">
     <param name="tf_prefix" value="robot2_tf" />
+    <rosparam command="load" file="$(find husky_control)/config/control.yaml" />
     <include file="$(find husky_gazebo)/launch/description_gazebo.launch">
       <arg name="gps_enabled" value="true"/>
       <arg name="imu_enabled" value="true"/>
@@ -64,7 +65,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
       <arg name="model"  value="robot2" />
       <arg name="tf_prefix"  value="/robot2_tf/" />
     </include>
-  </group -->
+  </group>
 
   <!-- Multimaster configuration for Gezebo -->
   <!-- This is a basic configuration. It will automatically register publishers and subscribers to
