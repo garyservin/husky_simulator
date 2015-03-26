@@ -37,7 +37,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     <arg name="debug" value="false"/>
   </include>
 
-  <!-- BEGIN ROBOT 1 simulated basics -->
+  <!-- ROBOT 1 model and configuration files -->
   <group ns="robot1">
     <rosparam command="load" file="$(find husky_control)/config/control.yaml" />
     <include file="$(find husky_gazebo)/launch/description_gazebo.launch">
@@ -50,7 +50,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     </include>
   </group>
 
-  <!-- BEGIN ROBOT 2 simulated basics -->
+  <!-- ROBOT 2 model and configuration files -->
   <group ns="robot2">
     <rosparam command="load" file="$(find husky_control)/config/control.yaml" />
     <include file="$(find husky_gazebo)/launch/description_gazebo.launch">
@@ -63,16 +63,16 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     </include>
   </group>
 
-  <!-- Multimaster configuration for Gezebo -->
-  <!-- This is a basic configuration. It will automatically register publishers and subscribers to
-       topics which start with the /public prefix to all other masters -->
+  <!-- Multimaster configuration for Gezebo master -->
+  <!-- This is a basic configuration. It doesn't do anything specific, import and
+       export configuration will be on each robot simulation node -->
   <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery" />
   <node pkg="master_sync_fkie" type="master_sync" name="master_sync" >
-    <rosparam param="sync_topics">
-        - /public*
+     <rosparam param="sync_topics" subst_value="True">
+      - /public*
     </rosparam>
-    <rosparam param="sync_services">
-        - /public*
+    <rosparam param="sync_services" subst_value="True">
+      - /public*
     </rosparam>
-  </node>
+ </node>
 </launch>
