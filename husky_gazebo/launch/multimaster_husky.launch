@@ -24,14 +24,21 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCL
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <launch>
+  <!-- ************************************************** -->
+  <!-- COMMON configuration (simulation and real robots)  -->
+  <!-- ************************************************** -->
+
   <!-- robot_name needs to be a unique name for this robot -->
   <arg name="robot_name" doc="Robot name. Must match a namespace defined in the corresponding _multimaster_gazebo.launch file" />
 
-  <!-- Use simulation clock -->
-  <param name="/use_sim_time" value="true" />
-
   <!-- Robot launch files which are common to simulation and real robot -->
   <include file="$(find husky_control)/launch/control.launch"></include>
+
+  <!-- Public interface configuration -->
+  <!-- Import cmd_vel -->
+  <node pkg="topic_tools" type="relay" args="/public/$(arg robot_name)/cmd_vel /cmd_vel" name="public_$(arg robot_name)_import_cmd_vel"></node>
+  <!-- Use simulation clock -->
+  <param name="/use_sim_time" value="true" />
 
   <!-- Multimaster configuration for this robot.
        Import and export all nodes prefixed with this robot's name -->
@@ -47,21 +54,28 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     </rosparam>
   </node>
 
-  <!-- Public interface configuration -->
-  <!-- Import cmd_vel -->
-  <node pkg="topic_tools" type="relay" args="/public/$(arg robot_name)/cmd_vel /cmd_vel" name="public_$(arg robot_name)_import_cmd_vel"></node>
+  <!-- *************************************************** -->
+  <!-- SIMULATION configuration (not used for real robots) -->
+  <!-- *************************************************** -->
+
+  <!-- Load robot description and joint state publisher -->
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find husky_description)/urdf/description.xacro'" />
 
   <!-- Simulation Interface configuration -->
+  <!-- Import controller odom from Gazebo plug-in for robot_localization -->
+  <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/husky_velocity_controller/odom /husky_velocity_controller/odom" name="$(arg robot_name)_import_odom"></node>
   <!-- Export cmd_vel -->
   <node pkg="topic_tools" type="relay" args="/husky_velocity_controller/cmd_vel /$(arg robot_name)/husky_velocity_controller/cmd_vel" name="$(arg robot_name)_export_cmd_vel"></node>
   <!-- Import IMU -->
   <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/imu/data /imu/data" name="$(arg robot_name)_import_imu"></node>
+  <!-- Import GPS -->
+  <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/navsat/fix /navsat/fix" name="$(arg robot_name)_import_gps"></node>
   <!-- Import TF -->
+  <!-- NOTE: Maybe this can be replaced by /joint_states -->
   <node pkg="topic_tools" type="relay" args="/public/tf /tf" name="$(arg robot_name)_import_tf"></node>
 
   <!-- Import controller interface from Gazebo node -->
   <node pkg="service_tools" type="relay.py" args="/$(arg robot_name)/controller_manager/load_controller /controller_manager/load_controller controller_manager_msgs LoadController" name="$(arg robot_name)_import_gazebo_load_controller"></node>
   <node pkg="service_tools" type="relay.py" args="/$(arg robot_name)/controller_manager/switch_controller /controller_manager/switch_controller controller_manager_msgs SwitchController" name="$(arg robot_name)_import_gazebo_switch_controller"></node>
   <node pkg="service_tools" type="relay.py" args="/$(arg robot_name)/controller_manager/unload_controller /controller_manager/unload_controller controller_manager_msgs UnloadController" name="$(arg robot_name)_import_gazebo_unload_controller"></node>
-
 </launch>
