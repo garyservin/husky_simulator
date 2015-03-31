@@ -67,11 +67,15 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- This is a basic configuration. It doesn't do anything specific, import and
        export configuration will be on each robot simulation node -->
   <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery" />
-  <node pkg="master_sync_fkie" type="master_sync" name="master_sync" >
-     <rosparam param="sync_topics" subst_value="True">
+  <node pkg="master_sync_fkie" type="master_sync" name="master_sync">
+    <rosparam param="sync_topics">
       - /public*
+      - /clock
     </rosparam>
-    <rosparam param="sync_services" subst_value="True">
+    <rosparam param="ignore_subscribers">
+      - /clock
+    </rosparam>
+    <rosparam param="sync_services">
       - /public*
     </rosparam>
  </node>
