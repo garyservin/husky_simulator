@@ -64,8 +64,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- SIMULATION configuration (not used for real robots) -->
   <!-- *************************************************** -->
 
-  <!-- Load robot description and joint state publisher -->
-  <param name="robot_description" command="$(find xacro)/xacro.py '$(find husky_description)/urdf/description.xacro'" />
+  <!-- Load robot description and robot state publisher -->
+  <include file="$(find husky_description)/launch/description.launch" />
 
   <!-- Simulation Interface configuration -->
   <!-- Import controller odom from Gazebo plug-in for robot_localization -->
@@ -76,9 +76,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/imu/data /imu/data" name="$(arg robot_name)_import_imu"></node>
   <!-- Import GPS -->
   <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/navsat/fix /navsat/fix" name="$(arg robot_name)_import_gps"></node>
-  <!-- Import TF -->
-  <!-- NOTE: Maybe this can be replaced by /joint_states -->
-  <node pkg="topic_tools" type="relay" args="/public/tf /tf" name="$(arg robot_name)_import_tf"></node>
+  <!-- Import joint_states -->
+  <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/joint_states /joint_states" name="$(arg robot_name)_import_joint_states"></node>
 
   <!-- Import controller interface from Gazebo node -->
   <node pkg="service_tools" type="relay.py" args="/$(arg robot_name)/controller_manager/load_controller /controller_manager/load_controller controller_manager_msgs LoadController" name="$(arg robot_name)_import_gazebo_load_controller"></node>
