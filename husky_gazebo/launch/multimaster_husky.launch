@@ -76,6 +76,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/imu/data /imu/data" name="$(arg robot_name)_import_imu"></node>
   <!-- Import GPS -->
   <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/navsat/fix /navsat/fix" name="$(arg robot_name)_import_gps"></node>
+  <!-- Import and fix frame_id for Laser Scanner -->
+  <node pkg="multimaster_launch" type="remove_prefix" args="/$(arg robot_name)/scan /scan sensor_msgs LaserScan" name="$(arg robot_name)_import_scan"></node>
   <!-- Import joint_states -->
   <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/joint_states /joint_states" name="$(arg robot_name)_import_joint_states"></node>
 
