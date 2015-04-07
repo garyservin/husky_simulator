@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!--
+Software License Agreement (BSD)
+
+\file      husky_empty_world.launch
+\authors   Paul Bovbel <pbovbel@clearpathrobotics.com>, Julian Cerruti <jcerruti@creativa77.com>
+\copyright Copyright (c) 2015, Clearpath Robotics, Inc., All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that
+the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the
+   following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the 
+   following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of Clearpath Robotics nor the names of its contributors may be used to endorse or promote
+   products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WAR-
+RANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, IN-
+DIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<launch>
+  <!-- ************************************************** -->
+  <!-- COMMON configuration (simulation and real robots)  -->
+  <!-- ************************************************** -->
+
+  <!-- robot_name needs to be a unique name for this robot -->
+  <arg name="robot_name" doc="Robot name. Must match a namespace defined in the corresponding _multimaster_gazebo.launch file" />
+
+  <arg name="laser_enabled" default="true"/>
+  <arg name="ur5_enabled" default="false"/>
+  <arg name="kinect_enabled" default="false"/>
+
+  <param name="/use_sim_time" value="true" />
+
+  <!-- Robot launch files which are common to simulation and real robot -->
+  <include file="$(find husky_control)/launch/control.launch"></include>
+
+  <!-- Public interface configuration -->
+  <!-- Import cmd_vel -->
+  <node pkg="topic_tools" type="relay" args="/public/$(arg robot_name)/cmd_vel /cmd_vel" name="public_$(arg robot_name)_import_cmd_vel"></node>
+  <!-- Use simulation clock -->
+  <param name="/use_sim_time" value="true" />
+
+  <!-- Multimaster configuration for this robot.
+       Import and export all nodes prefixed with this robot's name -->
+  <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery"/>
+  <node pkg="master_sync_fkie" type="master_sync" name="master_sync">
+    <rosparam param="sync_topics" subst_value="True">
+      - /public*
+      - /$(arg robot_name)*
+      - /clock
+    </rosparam>
+    <rosparam param="ignore_subscribers">
+      - /clock
+    </rosparam>
+    <rosparam param="sync_services" subst_value="True">
+      - /public*
+      - /$(arg robot_name)*
+    </rosparam>
+  </node>
+
+  <!-- *************************************************** -->
+  <!-- SIMULATION configuration (not used for real robots) -->
+  <!-- *************************************************** -->
+
+  <!-- Load robot description and robot state publisher -->
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(env HUSKY_GAZEBO_DESCRIPTION)'
+    laser_enabled:=$(arg laser_enabled)
+    ur5_enabled:=$(arg ur5_enabled)
+    kinect_enabled:=$(arg kinect_enabled)
+    robot_namespace:=/$(arg robot_name)
+    " />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <!--include file="$(find husky_description)/launch/description.launch" /-->
+
+  <!-- Simulation Interface configuration -->
+  <!-- Import controller odom from Gazebo plug-in for robot_localization -->
+  <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/husky_velocity_controller/odom /husky_velocity_controller/odom" name="$(arg robot_name)_import_odom"></node>
+  <!-- Export cmd_vel -->
+  <node pkg="topic_tools" type="relay" args="/husky_velocity_controller/cmd_vel /$(arg robot_name)/husky_velocity_controller/cmd_vel" name="$(arg robot_name)_export_cmd_vel"></node>
+  <!-- Import IMU -->
+  <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/imu/data /imu/data" name="$(arg robot_name)_import_imu"></node>
+  <!-- Import GPS -->
+  <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/navsat/fix /navsat/fix" name="$(arg robot_name)_import_gps"></node>
+  <!-- Import and fix frame_id for Laser Scanner -->
+  <node pkg="multimaster_launch" type="remove_prefix" args="/$(arg robot_name)/scan /scan sensor_msgs LaserScan" name="$(arg robot_name)_import_scan"></node>
+  <!-- Import joint_states -->
+  <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/joint_states /joint_states" name="$(arg robot_name)_import_joint_states"></node>
+
+  <!-- Import controller interface from Gazebo node -->
+  <node pkg="service_tools" type="relay.py" args="/$(arg robot_name)/controller_manager/load_controller /controller_manager/load_controller controller_manager_msgs LoadController" name="$(arg robot_name)_import_gazebo_load_controller"></node>
+  <node pkg="service_tools" type="relay.py" args="/$(arg robot_name)/controller_manager/switch_controller /controller_manager/switch_controller controller_manager_msgs SwitchController" name="$(arg robot_name)_import_gazebo_switch_controller"></node>
+  <node pkg="service_tools" type="relay.py" args="/$(arg robot_name)/controller_manager/unload_controller /controller_manager/unload_controller controller_manager_msgs UnloadController" name="$(arg robot_name)_import_gazebo_unload_controller"></node>
+</launch>
