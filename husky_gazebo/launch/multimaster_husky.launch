@@ -74,17 +74,6 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- Use simulation clock -->
   <param name="/use_sim_time" value="true" />
 
-  <!-- Load robot description and robot state publisher 
-  <param name="robot_description" command="$(find xacro)/xacro.py '$(env HUSKY_GAZEBO_DESCRIPTION)'
-    laser_enabled:=$(arg laser_enabled)
-    ur5_enabled:=$(arg ur5_enabled)
-    kinect_enabled:=$(arg kinect_enabled)
-    robot_namespace:=/$(arg robot_name)
-    " />
-
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
-  <!-include file="$(find husky_description)/launch/description.launch" /-->
-
   <!-- Simulation Interface configuration -->
   <!-- Import controller odom from Gazebo plug-in for robot_localization -->
   <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/husky_velocity_controller/odom /husky_velocity_controller/odom" name="$(arg robot_name)_import_odom"></node>
