@@ -35,7 +35,12 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <arg name="ur5_enabled" default="false"/>
   <arg name="kinect_enabled" default="false"/>
 
-  <param name="/use_sim_time" value="true" />
+  <!-- Robot description and state publisher -->
+  <include file="$(find husky_description)/launch/description.launch">
+    <arg name="laser_enabled" value="$(arg laser_enabled)" />
+    <arg name="ur5_enabled" value="$(arg ur5_enabled)" />
+    <arg name="kinect_enabled" value="$(arg kinect_enabled)" />
+  </include>
 
   <!-- Robot launch files which are common to simulation and real robot -->
   <include file="$(find husky_control)/launch/control.launch"></include>
@@ -43,8 +48,6 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- Public interface configuration -->
   <!-- Import cmd_vel -->
   <node pkg="topic_tools" type="relay" args="/public/$(arg robot_name)/cmd_vel /cmd_vel" name="public_$(arg robot_name)_import_cmd_vel"></node>
-  <!-- Use simulation clock -->
-  <param name="/use_sim_time" value="true" />
 
   <!-- Multimaster configuration for this robot.
        Import and export all nodes prefixed with this robot's name -->
@@ -68,7 +71,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- SIMULATION configuration (not used for real robots) -->
   <!-- *************************************************** -->
 
-  <!-- Load robot description and robot state publisher -->
+  <!-- Use simulation clock -->
+  <param name="/use_sim_time" value="true" />
+
+  <!-- Load robot description and robot state publisher 
   <param name="robot_description" command="$(find xacro)/xacro.py '$(env HUSKY_GAZEBO_DESCRIPTION)'
     laser_enabled:=$(arg laser_enabled)
     ur5_enabled:=$(arg ur5_enabled)
@@ -77,7 +83,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     " />
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
-  <!--include file="$(find husky_description)/launch/description.launch" /-->
+  <!-include file="$(find husky_description)/launch/description.launch" /-->
 
   <!-- Simulation Interface configuration -->
   <!-- Import controller odom from Gazebo plug-in for robot_localization -->
