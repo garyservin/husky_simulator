@@ -24,16 +24,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCL
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <launch>
-  <!-- ************************************************** -->
-  <!-- COMMON configuration (simulation and real robots)  -->
-  <!-- ************************************************** -->
-
   <!-- robot_name needs to be a unique name for this robot -->
   <arg name="robot_name" doc="Robot name. Must match a namespace defined in the corresponding _multimaster_gazebo.launch file" />
 
   <arg name="laser_enabled" default="true"/>
   <arg name="ur5_enabled" default="false"/>
   <arg name="kinect_enabled" default="false"/>
+
+  <!-- Use simulation clock -->
+  <param name="/use_sim_time" value="true" />
 
   <!-- Robot description and state publisher -->
   <include file="$(find husky_description)/launch/description.launch">
@@ -45,51 +44,15 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- Robot launch files which are common to simulation and real robot -->
   <include file="$(find husky_control)/launch/control.launch"></include>
 
-  <!-- Public interface configuration -->
-  <!-- Import cmd_vel -->
-  <node pkg="topic_tools" type="relay" args="/public/$(arg robot_name)/cmd_vel /cmd_vel" name="public_$(arg robot_name)_import_cmd_vel"></node>
+  <!-- Add here any additional common feature you would like to run -->
 
-  <!-- Multimaster configuration for this robot.
-       Import and export all nodes prefixed with this robot's name -->
-  <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery"/>
-  <node pkg="master_sync_fkie" type="master_sync" name="master_sync">
-    <rosparam param="sync_topics" subst_value="True">
-      - /public*
-      - /$(arg robot_name)*
-      - /clock
-    </rosparam>
-    <rosparam param="ignore_subscribers">
-      - /clock
-    </rosparam>
-    <rosparam param="sync_services" subst_value="True">
-      - /public*
-      - /$(arg robot_name)*
-    </rosparam>
-  </node>
-
-  <!-- *************************************************** -->
-  <!-- SIMULATION configuration (not used for real robots) -->
-  <!-- *************************************************** -->
-
-  <!-- Use simulation clock -->
-  <param name="/use_sim_time" value="true" />
-
-  <!-- Simulation Interface configuration -->
-  <!-- Import controller odom from Gazebo plug-in for robot_localization -->
-  <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/husky_velocity_controller/odom /husky_velocity_controller/odom" name="$(arg robot_name)_import_odom"></node>
-  <!-- Export cmd_vel -->
-  <node pkg="topic_tools" type="relay" args="/husky_velocity_controller/cmd_vel /$(arg robot_name)/husky_velocity_controller/cmd_vel" name="$(arg robot_name)_export_cmd_vel"></node>
-  <!-- Import IMU -->
-  <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/imu/data /imu/data" name="$(arg robot_name)_import_imu"></node>
-  <!-- Import GPS -->
-  <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/navsat/fix /navsat/fix" name="$(arg robot_name)_import_gps"></node>
-  <!-- Import and fix frame_id for Laser Scanner -->
-  <node pkg="multimaster_launch" type="remove_prefix" args="/$(arg robot_name)/scan /scan sensor_msgs LaserScan" name="$(arg robot_name)_import_scan"></node>
-  <!-- Import joint_states -->
-  <node pkg="topic_tools" type="relay" args="/$(arg robot_name)/joint_states /joint_states" name="$(arg robot_name)_import_joint_states"></node>
-
-  <!-- Import controller interface from Gazebo node -->
-  <node pkg="service_tools" type="relay.py" args="/$(arg robot_name)/controller_manager/load_controller /controller_manager/load_controller controller_manager_msgs LoadController" name="$(arg robot_name)_import_gazebo_load_controller"></node>
-  <node pkg="service_tools" type="relay.py" args="/$(arg robot_name)/controller_manager/switch_controller /controller_manager/switch_controller controller_manager_msgs SwitchController" name="$(arg robot_name)_import_gazebo_switch_controller"></node>
-  <node pkg="service_tools" type="relay.py" args="/$(arg robot_name)/controller_manager/unload_controller /controller_manager/unload_controller controller_manager_msgs UnloadController" name="$(arg robot_name)_import_gazebo_unload_controller"></node>
+  <!-- Multimaster configuration -->
+  <!-- Include common configuration -->
+  <include file="$(find multimaster_launch)/launch/multimaster_common.launch">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+  </include>
+  <!-- Include additional configuration for simulation -->
+  <include file="$(find multimaster_launch)/launch/multimaster_gazebo_robot.launch">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+  </include>
 </launch>

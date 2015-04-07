@@ -24,7 +24,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCL
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <launch>
-  
   <arg name="world_name" default="worlds/empty.world"/>
 
   <arg name="laser_enabled" default="true"/>
@@ -70,19 +69,5 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   </group>
 
   <!-- Multimaster configuration for Gezebo master -->
-  <!-- This is a basic configuration. It doesn't do anything specific, import and
-       export configuration will be on each robot simulation node -->
-  <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery" />
-  <node pkg="master_sync_fkie" type="master_sync" name="master_sync">
-    <rosparam param="sync_topics">
-      - /public*
-      - /clock
-    </rosparam>
-    <rosparam param="ignore_subscribers">
-      - /clock
-    </rosparam>
-    <rosparam param="sync_services">
-      - /public*
-    </rosparam>
- </node>
+  <include file="$(find multimaster_launch)/launch/multimaster_gazebo_master.launch" />
 </launch>
