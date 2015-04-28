@@ -10,7 +10,7 @@ Redistribution and use in source and binary forms, with or without modification,
 the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the
    following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
    following disclaimer in the documentation and/or other materials provided with the distribution.
  * Neither the name of Clearpath Robotics nor the names of its contributors may be used to endorse or promote
    products derived from this software without specific prior written permission.
@@ -47,7 +47,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
       <arg name="laser_enabled" value="$(arg laser_enabled)"/>
       <arg name="ur5_enabled" value="$(arg ur5_enabled)"/>
       <arg name="kinect_enabled" value="$(arg kinect_enabled)"/>
-      <arg name="init_pose" value="-x 1 -y 1 -z 0" />
+      <arg name="init_pose" value="-x 0 -y 0 -z 0" />
       <arg name="multimaster_enabled" value="true"/>
       <arg name="robot_name" value="robot1" />
       <arg name="model" value="robot1" />
@@ -68,7 +68,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     </include>
     <!-- Publish static transform from robot's odometry to the general map using
          the initial position -->
-    <node pkg="tf" type="static_transform_publisher" name="robot1_odom_static" args="1 1 0 0 0 0 1 map robot1/odom 200"></node>
+    <node pkg="tf" type="static_transform_publisher" name="robot1_odom_static" args="0 0 0 0 0 0 1 map robot1/odom 200"></node>
     <node pkg="tf" type="static_transform_publisher" name="robot2_odom_static" args="3 5 0 0 0 0 1 map robot2/odom 200"></node>
   </group>
 
