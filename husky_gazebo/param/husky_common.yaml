@@ -1,0 +1,23 @@
+topics:
+  public: true
+  imports:
+    - topic: cmd_vel
+      type: geometry_msgs/Twist
+    - topic: twist_marker_server/feedback
+      type: visualization_msgs/InteractiveMarkerFeedback
+      remove_prefix: true
+  exports:
+    - topic: odometry/filtered
+      type: nav_msgs/Odometry
+      add_prefix: true
+    - topic: scan
+      type: sensor_msgs/LaserScan
+      add_prefix: true
+    - topic: twist_marker_server/update
+      type: visualization_msgs/InteractiveMarkerUpdate
+      add_prefix: true
+    - topic: twist_marker_server/update_full
+      type: visualization_msgs/InteractiveMarkerInit
+      add_prefix: true
+    - topic: joint_states
+      type: sensor_msgs/JointState

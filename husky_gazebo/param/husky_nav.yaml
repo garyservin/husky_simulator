@@ -1,0 +1,29 @@
+topics:
+  public: true
+  imports:
+    - topic: move_base/goal
+      type: move_base_msgs/MoveBaseActionGoal
+      remove_prefix: true
+    - topic: move_base/cancel
+      type: actionlib_msgs/GoalID
+      remove_prefix: true
+
+  exports:
+    - topic: amcl_pose
+      type: geometry_msgs/PoseWithCovarianceStamped
+      add_prefix: true
+    - topic: move_base/status
+      type: actionlib_msgs/GoalStatusArray
+      add_prefix: true
+    - topic: move_base/feedback
+      type: move_base_msgs/MoveBaseActionFeedback
+      add_prefix: true
+    - topic: move_base/result
+      type: move_base_msgs/MoveBaseActionResult
+      add_prefix: true
+
+action_servers:
+  public: true
+  exports:
+    - name: move_base
+      type: MoveBaseAction
