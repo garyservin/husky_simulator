@@ -3,7 +3,6 @@ topics:
   imports:
     - topic: cmd_vel
       type: geometry_msgs/Twist
-      remove_prefix: true
     - topic: twist_marker_server/feedback
       type: visualization_msgs/InteractiveMarkerFeedback
       remove_prefix: true
@@ -22,4 +21,3 @@ topics:
       add_prefix: true
     - topic: joint_states
       type: sensor_msgs/JointState
-      add_prefix: true
